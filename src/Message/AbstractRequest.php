@@ -221,7 +221,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         }
 
         if ($this->getSecurityKey()) {
-            $data['security_key'] = $this-getSecurityKey();
+            $data['security_key'] = $this->getSecurityKey();
         } else {
             $data['username'] = $this->getUsername();
             $data['password'] = $this->getPassword();
