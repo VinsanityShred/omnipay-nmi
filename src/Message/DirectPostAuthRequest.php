@@ -108,7 +108,7 @@ class DirectPostAuthRequest extends AbstractRequest
         }
 
         if ($this->getCardReference()) {
-            $data['customer_vault_id'] = $this->getCardReference();
+            $data['payment_token'] = $this->getCardReference();
 
             return $data;
         } else {
