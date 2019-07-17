@@ -11,17 +11,21 @@ class DirectPostCreateCardRequest extends AbstractRequest
 
     public function getData()
     {
-        $this->validate('card');
-        $this->getCard()->validate();
-
         $data = $this->getBaseData();
 
-        $data['ccnumber'] = $this->getCard()->getNumber();
-        $data['ccexp'] = $this->getCard()->getExpiryDate('my');
-        $data['payment'] = 'creditcard';
+        if ($this->getCardReference()) {
+            $data['payment_token'] = $this->getCardReference();
+        } else {
+            $this->validate('card');
+            $this->getCard()->validate();
+
+            $data['ccnumber'] = $this->getCard()->getNumber();
+            $data['ccexp'] = $this->getCard()->getExpiryDate('my');
+            $data['payment'] = 'creditcard';
+        }
 
         if ('update_customer' === $this->customer_vault) {
-            $data['customer_vault_id'] = $this->getCardReference();
+            $data['customer_vault_id'] = $this->getCustomerId();
         }
 
         return array_merge(

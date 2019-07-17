@@ -102,21 +102,27 @@ class DirectPostAuthRequest extends AbstractRequest
             'merchant_defined_field_4' => $this->getMerchantDefinedField4(),
         ]);
 
-        if ($this->getCardReference()) {
-            if ($this->getCardReference() === $this->getCustomerId()) {
-                $this->validate('customer_vault');
+        if ($this->getCustomerId()) {
+            $this->validate('customer_vault');
 
-                $data['customer_vault_id'] = $this->getCustomerId();
-                $data['customer_vault']    = $this->getCustomerVault();
-            } else {
+            $data['customer_vault_id'] = $this->getCustomerId();
+            $data['customer_vault']    = $this->getCustomerVault();
+
+            if ($data['customer_vault'] !== 'update_customer') {
+                $this->validate('card_reference');
+
                 $data['payment_token'] = $this->getCardReference();
             }
-        } else {
-            $this->getCard()->validate();
+        } elseif ($this->getCardReference()) {
+            $this->validate('card_reference');
 
-            $data['ccnumber'] = $this->getCard()->getNumber();
-            $data['ccexp']    = $this->getCard()->getExpiryDate('my');
-            $data['cvv']      = $this->getCard()->getCvv();
+            $data['payment_token'] = $this->getCardReference();
+        } else {
+           $this->getCard()->validate();
+
+           $data['ccnumber'] = $this->getCard()->getNumber();
+           $data['ccexp']    = $this->getCard()->getExpiryDate('my');
+           $data['cvv']      = $this->getCard()->getCvv();
         }
 
         return array_merge(
