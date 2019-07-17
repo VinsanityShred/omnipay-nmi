@@ -8,14 +8,114 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 {
     protected $endpoint = 'https://secure.nmi.com/api/transact.php';
 
-    public function getSecurityKey()
+    public function getCustomerId()
     {
-        return $this->getParameter('security_key');
+        return $this->getParameter('customerId');
+    }
+    
+    public function setCustomerId($value)
+    {
+        return $this->setParameter('customerId', $value);
+    }
+    
+    public function getCustomerVault()
+    {
+        return $this->getParameter('customer_vault') ?? $this->customer_vault ?? null;
+    }
+    
+    public function setCustomerVault($value)
+    {
+        return $this->setParameter('customer_vault', $value);
+    }
+    
+    public function getInitiatedBy()
+    {
+        return $this->getParameter('initiated_by');
+    }
+    
+    public function setInitiatedBy($value)
+    {
+        return $this->setParameter('initiated_by', $value);
     }
 
-    public function setSecurityKey($value)
+    public function getStoredCredentialIndicator()
     {
-        return $this->setParameter('security_key', $value);
+        return $this->getParameter('stored_credential_indicator');
+    }
+    
+    public function setStoredCredentialIndicator($value)
+    {
+        return $this->setParameter('stored_credential_indicator', $value);
+    }
+
+    public function getDiscountAmount()
+    {
+        return $this->getParameter('discount_amount');
+    }
+    
+    public function setDiscountAmount($value)
+    {
+        return $this->setParameter('discount_amount', $value);
+    }
+    
+    public function getVatTaxAmount()
+    {
+        return $this->getParameter('vat_tax_amount');
+    }
+    
+    public function setVatTaxAmount($value)
+    {
+        return $this->setParameter('vat_tax_amount', $value);
+    }
+    
+    public function getVatTaxRate()
+    {
+        return $this->getParameter('vat_tax_rate');
+    }
+    
+    public function setVatTaxRate($value)
+    {
+        return $this->setParameter('vat_tax_rate', $value);
+    }
+    
+    public function getCustomerVatRegistration()
+    {
+        return $this->getParameter('customer_vat_registration');
+    }
+    
+    public function setCustomerVatRegistration($value)
+    {
+        return $this->setParameter('customer_vat_registration', $value);
+    }
+    
+    public function getMerchantVatRegistration()
+    {
+        return $this->getParameter('merchant_vat_registration');
+    }
+    
+    public function setMerchantVatRegistration($value)
+    {
+        return $this->setParameter('merchant_vat_registration', $value);
+    }
+
+    public function getBillingMethod()
+    {
+        return $this->getParameter('billing_method');
+    }
+    
+    public function setBillingMethod($value)
+    {
+        return $this->setParameter('billing_method', $value);
+    }
+
+    public function getApiKey()
+    {
+        return $this->getParameter('api_key');
+    }
+
+    public function setApiKey($value)
+    {
+        return $this->setParameter('api_key', $value);
     }
 
     public function getUsername()
@@ -168,6 +268,16 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $this->setParameter('orderid', $value);
     }
 
+    public function getOrderDate()
+    {
+        return $this->getParameter('order_date');
+    }
+
+    public function setOrderDate($value)
+    {
+        return $this->setParameter('order_date', $value);
+    }
+
     public function getOrderDescription()
     {
         return $this->getParameter('orderdescription');
@@ -210,109 +320,77 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     protected function getBaseData()
     {
-        $data = array();
+        $data = [];
 
         if (isset($this->type)) {
             $data['type'] = $this->type;
         }
 
-        if (isset($this->customer_vault)) {
-            $data['customer_vault'] = $this->customer_vault;
-        }
-
-        if ($this->getSecurityKey()) {
-            $data['security_key'] = $this->getSecurityKey();
+        if ($this->getApiKey()) {
+            $data['security_key'] = $this->getApiKey();
         } else {
+            $this->validate('username', 'password');
+
             $data['username'] = $this->getUsername();
             $data['password'] = $this->getPassword();
         }
 
-        if ($this->getProcessorId()) {
-            $data['processor_id'] = $this->getProcessorId();
-        }
-
-        if ($this->getAuthorizationCode()) {
-            $data['authorization_code'] = $this->getAuthorizationCode();
-        }
-
-        if ($this->getDescriptor()) {
-            $data['descriptor'] = $this->getDescriptor();
-        }
-
-        if ($this->getDescriptorPhone()) {
-            $data['descriptor_phone'] = $this->getDescriptorPhone();
-        }
-
-        if ($this->getDescriptorAddress()) {
-            $data['descriptor_address'] = $this->getDescriptorAddress();
-        }
-
-        if ($this->getDescriptorCity()) {
-            $data['descriptor_city'] = $this->getDescriptorCity();
-        }
-
-        if ($this->getDescriptorState()) {
-            $data['descriptor_state'] = $this->getDescriptorState();
-        }
-
-        if ($this->getDescriptorPostal()) {
-            $data['descriptor_postal'] = $this->getDescriptorPostal();
-        }
-
-        if ($this->getDescriptorCountry()) {
-            $data['descriptor_country'] = $this->getDescriptorCountry();
-        }
-
-        if ($this->getDescriptorMcc()) {
-            $data['descriptor_mcc'] = $this->getDescriptorMcc();
-        }
-
-        if ($this->getDescriptorMerchantId()) {
-            $data['descriptor_merchant_id'] = $this->getDescriptorMerchantId();
-        }
-
-        if ($this->getDescriptorUrl()) {
-            $data['descriptor_url'] = $this->getDescriptorUrl();
-        }
-
-        return $data;
+        return array_merge($data, array_filter([
+            'customer_vault' => $this->getCustomerVault(),
+            'processor_id' => $this->getProcessorId(),
+            'authorization_code' => $this->getAuthorizationCode(),
+            'descriptor' => $this->getDescriptor(),
+            'descriptor_phone' => $this->getDescriptorPhone(),
+            'descriptor_address' => $this->getDescriptorAddress(),
+            'descriptor_city' => $this->getDescriptorCity(),
+            'descriptor_state' => $this->getDescriptorState(),
+            'descriptor_postal' => $this->getDescriptorPostal(),
+            'descriptor_country' => $this->getDescriptorCountry(),
+            'descriptor_mcc' => $this->getDescriptorMcc(),
+            'descriptor_merchant_id' => $this->getDescriptorMerchantId(),
+            'descriptor_url' => $this->getDescriptorUrl(),
+        ]));
     }
 
     protected function getOrderData()
     {
-        $data = array();
-
-        $data['orderid'] = $this->getOrderId();
-        $data['orderdescription'] = $this->getOrderDescription();
-        $data['tax'] = $this->getTax();
-        $data['shipping'] = $this->getShipping();
-        $data['ponumber'] = $this->getPONumber();
-        $data['ipaddress'] = $this->getClientIp();
-        if ($this->getCurrency()) {
-            $data['currency'] = $this->getCurrency();
-        }
-
-        return $data;
+        return array_filter([
+            'orderid' => $this->getOrderId(),
+            'order_date' => $this->getOrderDate(),
+            'orderdescription' => $this->getOrderDescription(),
+            'discount_amount' => $this->getDiscountAmount(),
+            'tax' => $this->getTax(),
+            'vat_tax_amount' => $this->getVatTaxAmount(),
+            'vat_tax_rate' => $this->getVatTaxRate(),
+            'customer_vat_registration' => $this->getCustomerVatRegistration(),
+            'merchant_vat_registration' => $this->getMerchantVatRegistration(),
+            'billing_method' => $this->getBillingMethod(),
+            'ponumber' => $this->getPONumber(),
+            'ipaddress' => $this->getClientIp(),
+            'currency' => $this->getCurrency(),
+        ]);
     }
 
     protected function getBillingData()
     {
-        $data = array();
+        $data = [];
 
         if ($card = $this->getCard()) {
-            $data['firstname'] = $card->getBillingFirstName();
-            $data['lastname'] = $card->getBillingLastName();
-            $data['company'] = $card->getBillingCompany();
-            $data['address1'] = $card->getBillingAddress1();
-            $data['address2'] = $card->getBillingAddress2();
-            $data['city'] = $card->getBillingCity();
-            $data['state'] = $card->getBillingState();
-            $data['zip'] = $card->getBillingPostcode();
-            $data['country'] = $card->getBillingCountry();
-            $data['phone'] = $card->getBillingPhone();
-            $data['fax'] = $card->getBillingFax();
-            $data['email'] = $card->getEmail();
-            // $data['website'] = $card->getWebsite();
+            $data += [
+                'firstname' => $card->getBillingFirstName(),
+                'lastname' => $card->getBillingLastName(),
+                'company' => $card->getBillingCompany(),
+                'address1' => $card->getBillingAddress1(),
+                'address2' => $card->getBillingAddress2(),
+                'city' => $card->getBillingCity(),
+                'state' => $card->getBillingState(),
+                'zip' => $card->getBillingPostcode(),
+                'country' => $card->getBillingCountry(),
+                'phone' => $card->getBillingPhone(),
+                'fax' => $card->getBillingFax(),
+                'email' => $card->getEmail(),
+                // 'website' => $card->getWebsite(),
+            ];
         }
 
         return $data;
@@ -320,19 +398,21 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     protected function getShippingData()
     {
-        $data = array();
+        $data = [];
 
         if ($card = $this->getCard()) {
-            $data['shipping_firstname'] = $card->getShippingFirstName();
-            $data['shipping_lastname'] = $card->getShippingLastName();
-            $data['shipping_company'] = $card->getShippingCompany();
-            $data['shipping_address1'] = $card->getShippingAddress1();
-            $data['shipping_address2'] = $card->getShippingAddress2();
-            $data['shipping_city'] = $card->getShippingCity();
-            $data['shipping_state'] = $card->getShippingState();
-            $data['shipping_zip'] = $card->getShippingPostcode();
-            $data['shipping_country'] = $card->getShippingCountry();
-            $data['shipping_email'] = $card->getEmail();
+            $data += array_filter([
+                'shipping_firstname' => $card->getShippingFirstName(),
+                'shipping_lastname' => $card->getShippingLastName(),
+                'shipping_company' => $card->getShippingCompany(),
+                'shipping_address1' => $card->getShippingAddress1(),
+                'shipping_address2' => $card->getShippingAddress2(),
+                'shipping_city' => $card->getShippingCity(),
+                'shipping_state' => $card->getShippingState(),
+                'shipping_zip' => $card->getShippingPostcode(),
+                'shipping_country' => $card->getShippingCountry(),
+                'shipping_email' => $card->getEmail(),
+            ]);
         }
 
         return $data;
@@ -357,6 +437,6 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
 
     public function getEndpoint()
     {
-        return $this->getParameter('endpoint') ?: $this->endpoint;
+        return $this->getParameter('endpoint') ?? $this->endpoint;
     }
 }

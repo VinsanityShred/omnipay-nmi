@@ -1,4 +1,5 @@
 <?php
+
 namespace Omnipay\NMI\Message;
 
 /**
@@ -20,6 +21,7 @@ class DirectPostAuthRequest extends AbstractRequest
      * Sets the first merchant defined field.
      *
      * @param string
+     *
      * @return AbstractRequest Provides a fluent interface
      */
     public function setMerchantDefinedField_1($value)
@@ -39,6 +41,7 @@ class DirectPostAuthRequest extends AbstractRequest
      * Sets the second merchant defined field.
      *
      * @param string
+     *
      * @return AbstractRequest Provides a fluent interface
      */
     public function setMerchantDefinedField_2($value)
@@ -58,6 +61,7 @@ class DirectPostAuthRequest extends AbstractRequest
      * Sets the third merchant defined field.
      *
      * @param string
+     *
      * @return AbstractRequest Provides a fluent interface
      */
     public function setMerchantDefinedField_3($value)
@@ -77,6 +81,7 @@ class DirectPostAuthRequest extends AbstractRequest
      * Sets the fourth merchant defined field.
      *
      * @param string
+     *
      * @return AbstractRequest Provides a fluent interface
      */
     public function setMerchantDefinedField_4($value)
@@ -88,42 +93,37 @@ class DirectPostAuthRequest extends AbstractRequest
     {
         $this->validate('amount');
 
-        $data = $this->getBaseData();
-        $data['amount'] = $this->getAmount();
-
-        if ($this->getMerchantDefinedField_1()) {
-            $data['merchant_defined_field_1'] = $this->getMerchantDefinedField_1();
-        }
-
-        if ($this->getMerchantDefinedField_2()) {
-            $data['merchant_defined_field_2'] = $this->getMerchantDefinedField_2();
-        }
-
-        if ($this->getMerchantDefinedField_3()) {
-            $data['merchant_defined_field_3'] = $this->getMerchantDefinedField_3();
-        }
-
-        if ($this->getMerchantDefinedField_4()) {
-            $data['merchant_defined_field_4'] = $this->getMerchantDefinedField_4();
-        }
+        $data = $this->getBaseData() + array_filter([
+            'amount'                   => $this->getAmount(),
+            'payment'                  => $this->getPaymentMethod(),
+            'merchant_defined_field_1' => $this->getMerchantDefinedField1(),
+            'merchant_defined_field_2' => $this->getMerchantDefinedField2(),
+            'merchant_defined_field_3' => $this->getMerchantDefinedField3(),
+            'merchant_defined_field_4' => $this->getMerchantDefinedField4(),
+        ]);
 
         if ($this->getCardReference()) {
-            $data['payment_token'] = $this->getCardReference();
+            if ($this->getCardReference() === $this->getCustomerId()) {
+                $this->validate('customer_vault');
 
-            return $data;
+                $data['customer_vault_id'] = $this->getCustomerId();
+                $data['customer_vault']    = $this->getCustomerVault();
+            } else {
+                $data['payment_token'] = $this->getCardReference();
+            }
         } else {
             $this->getCard()->validate();
 
             $data['ccnumber'] = $this->getCard()->getNumber();
-            $data['ccexp'] = $this->getCard()->getExpiryDate('my');
-            $data['cvv'] = $this->getCard()->getCvv();
-
-            return array_merge(
-                $data,
-                $this->getOrderData(),
-                $this->getBillingData(),
-                $this->getShippingData()
-            );
+            $data['ccexp']    = $this->getCard()->getExpiryDate('my');
+            $data['cvv']      = $this->getCard()->getCvv();
         }
+
+        return array_merge(
+            $data,
+            $this->getOrderData(),
+            $this->getBillingData(),
+            $this->getShippingData()
+        );
     }
 }

@@ -24,11 +24,11 @@ class DirectPostGateway extends AbstractGateway
      */
     public function getDefaultParameters()
     {
-        return array(
+        return [
             'security_key' => '',
             'username'     => '',
             'password'     => '',
-        );
+        ];
     }
 
     /**
@@ -277,6 +277,10 @@ class DirectPostGateway extends AbstractGateway
         return $this->getParameter('descriptor_url');
     }
 
+    /**
+     * @param  string $value
+     * @return $this
+     */
     public function setDescriptorUrl($value)
     {
         return $this->setParameter('descriptor_url', $value);
@@ -287,7 +291,7 @@ class DirectPostGateway extends AbstractGateway
      */
     public function getEndpoint()
     {
-        return $this->endpoint;
+        return $this->getParameter('endpoint') ?? $this->endpoint;
     }
 
     /**
@@ -299,14 +303,21 @@ class DirectPostGateway extends AbstractGateway
         return $this->setParameter('endpoint', $value);
     }
 
-    public function purchase(array $parameters = array())
+    /**
+     * @return string
+     */
+    public function getCustomerReceipt()
     {
-        return $this->sale($parameters);
+        return $this->getParameter('customer_receipt');
     }
 
-    public function authorize(array $parameters = array())
+    /**
+     * @param  string $value
+     * @return $this
+     */
+    public function setCustomerReceipt($value)
     {
-        return $this->auth($parameters);
+        return $this->setParameter('customer_receipt', $value);
     }
 
     /**
@@ -314,9 +325,14 @@ class DirectPostGateway extends AbstractGateway
      * @param  array  $parameters
      * @return \Omnipay\NMI\Message\DirectPostSaleRequest
      */
-    public function sale(array $parameters = array())
+    public function sale(array $parameters = [])
     {
         return $this->createRequest('\Omnipay\NMI\Message\DirectPostSaleRequest', $parameters);
+    }
+
+    public function purchase(array $parameters = [])
+    {
+        return $this->sale($parameters);
     }
 
     /**
@@ -327,9 +343,14 @@ class DirectPostGateway extends AbstractGateway
      * @param  array  $parameters
      * @return \Omnipay\NMI\Message\DirectPostAuthRequest
      */
-    public function auth(array $parameters = array())
+    public function auth(array $parameters = [])
     {
         return $this->createRequest('\Omnipay\NMI\Message\DirectPostAuthRequest', $parameters);
+    }
+
+    public function authorize(array $parameters = [])
+    {
+        return $this->auth($parameters);
     }
 
     /**
@@ -339,7 +360,7 @@ class DirectPostGateway extends AbstractGateway
      * @param  array  $parameters
      * @return \Omnipay\NMI\Message\DirectPostCaptureRequest
      */
-    public function capture(array $parameters = array())
+    public function capture(array $parameters = [])
     {
         return $this->createRequest('\Omnipay\NMI\Message\DirectPostCaptureRequest', $parameters);
     }
@@ -351,7 +372,7 @@ class DirectPostGateway extends AbstractGateway
      * @param  array  $parameters
      * @return \Omnipay\NMI\Message\DirectPostVoidRequest
      */
-    public function void(array $parameters = array())
+    public function void(array $parameters = [])
     {
         return $this->createRequest('\Omnipay\NMI\Message\DirectPostVoidRequest', $parameters);
     }
@@ -362,7 +383,7 @@ class DirectPostGateway extends AbstractGateway
      * @param  array  $parameters
      * @return \Omnipay\NMI\Message\DirectPostRefundRequest
      */
-    public function refund(array $parameters = array())
+    public function refund(array $parameters = [])
     {
         return $this->createRequest('\Omnipay\NMI\Message\DirectPostRefundRequest', $parameters);
     }
@@ -374,7 +395,7 @@ class DirectPostGateway extends AbstractGateway
      * @param  array  $parameters
      * @return \Omnipay\NMI\Message\DirectPostCreditRequest
      */
-    public function credit(array $parameters = array())
+    public function credit(array $parameters = [])
     {
         return $this->createRequest('\Omnipay\NMI\Message\DirectPostCreditRequest', $parameters);
     }
@@ -383,7 +404,7 @@ class DirectPostGateway extends AbstractGateway
      * @param array $parameters
      * @return \Omnipay\NMI\Message\CreateCardRequest
      */
-    public function createCard(array $parameters = array())
+    public function createCard(array $parameters = [])
     {
         return $this->createRequest('\Omnipay\NMI\Message\DirectPostCreateCardRequest', $parameters);
     }
@@ -392,7 +413,7 @@ class DirectPostGateway extends AbstractGateway
      * @param array $parameters
      * @return \Omnipay\NMI\Message\UpdateCardRequest
      */
-    public function updateCard(array $parameters = array())
+    public function updateCard(array $parameters = [])
     {
         return $this->createRequest('\Omnipay\NMI\Message\DirectPostUpdateCardRequest', $parameters);
     }
@@ -401,7 +422,7 @@ class DirectPostGateway extends AbstractGateway
      * @param array $parameters
      * @return \Omnipay\NMI\Message\DeleteCardRequest
      */
-    public function deleteCard(array $parameters = array())
+    public function deleteCard(array $parameters = [])
     {
         return $this->createRequest('\Omnipay\NMI\Message\DirectPostDeleteCardRequest', $parameters);
     }
