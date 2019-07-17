@@ -12,7 +12,7 @@ class DirectPostAuthRequest extends AbstractRequest
     /**
      * @return string
      */
-    public function getMerchantDefinedField_1()
+    public function getMerchantDefinedField1()
     {
         return $this->getParameter('merchant_defined_field_1');
     }
@@ -24,7 +24,7 @@ class DirectPostAuthRequest extends AbstractRequest
      *
      * @return AbstractRequest Provides a fluent interface
      */
-    public function setMerchantDefinedField_1($value)
+    public function setMerchantDefinedField1($value)
     {
         return $this->setParameter('merchant_defined_field_1', $value);
     }
@@ -32,7 +32,7 @@ class DirectPostAuthRequest extends AbstractRequest
     /**
      * @return string
      */
-    public function getMerchantDefinedField_2()
+    public function getMerchantDefinedField2()
     {
         return $this->getParameter('merchant_defined_field_2');
     }
@@ -44,7 +44,7 @@ class DirectPostAuthRequest extends AbstractRequest
      *
      * @return AbstractRequest Provides a fluent interface
      */
-    public function setMerchantDefinedField_2($value)
+    public function setMerchantDefinedField2($value)
     {
         return $this->setParameter('merchant_defined_field_2', $value);
     }
@@ -52,7 +52,7 @@ class DirectPostAuthRequest extends AbstractRequest
     /**
      * @return string
      */
-    public function getMerchantDefinedField_3()
+    public function getMerchantDefinedField3()
     {
         return $this->getParameter('merchant_defined_field_3');
     }
@@ -64,7 +64,7 @@ class DirectPostAuthRequest extends AbstractRequest
      *
      * @return AbstractRequest Provides a fluent interface
      */
-    public function setMerchantDefinedField_3($value)
+    public function setMerchantDefinedField3($value)
     {
         return $this->setParameter('merchant_defined_field_3', $value);
     }
@@ -72,7 +72,7 @@ class DirectPostAuthRequest extends AbstractRequest
     /**
      * @return string
      */
-    public function getMerchantDefinedField_4()
+    public function getMerchantDefinedField4()
     {
         return $this->getParameter('merchant_defined_field_4');
     }
@@ -84,7 +84,7 @@ class DirectPostAuthRequest extends AbstractRequest
      *
      * @return AbstractRequest Provides a fluent interface
      */
-    public function setMerchantDefinedField_4($value)
+    public function setMerchantDefinedField4($value)
     {
         return $this->setParameter('merchant_defined_field_4', $value);
     }
